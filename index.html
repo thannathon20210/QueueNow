@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ระบบจองคิวออนไลน์</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+
+  <style>
+    :root {
+      --spacing-lg: 4rem;
+      --soft-bg: #f7fafc;
+      --card-radius: 18px;
+    }
+
+    body {
+      background: linear-gradient(180deg, #f8fbff 0%, #ffffff 45%);
+    }
+
+    nav {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e8eef5;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .hero {
+      padding: var(--spacing-lg) 0 2rem;
+    }
+
+    .hero-card {
+      padding: 2rem;
+      border-radius: var(--card-radius);
+      background: #ffffff;
+      box-shadow: 0 20px 50px rgba(40, 60, 90, 0.08);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: #eef6ff;
+      color: #1769aa;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    figure img {
+      border-radius: var(--card-radius);
+      width: 100%;
+      max-height: 360px;
+      object-fit: cover;
+    }
+
+    article {
+      border-radius: var(--card-radius);
+      box-shadow: 0 14px 38px rgba(40, 60, 90, 0.06);
+    }
+
+    .queue-list {
+      margin-top: 2rem;
+    }
+
+    .status {
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .status.success {
+      display: block;
+      background: #e9f9ef;
+      color: #166534;
+    }
+
+    .status.error {
+      display: block;
+      background: #fff1f2;
+      color: #be123c;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+      background: var(--soft-bg);
+      border-radius: 16px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    button.secondary {
+      background: #475569;
+      border-color: #475569;
+    }
+
+    button.danger {
+      background: #dc2626;
+      border-color: #dc2626;
+    }
+
+    footer {
+      padding: 2rem 0 3rem;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="container-fluid">
+    <ul>
+      <li><strong>QueueNow</strong></li>
+    </ul>
+    <ul>
+      <li><a href="#booking">จองคิว</a></li>
+      <li><a href="#queues">รายการคิว</a></li>
+      <li><a href="#booking" role="button">เริ่มจอง</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <div class="grid hero">
+      <section>
+        <div class="hero-card">
+          <span class="badge">ระบบจองคิวออนไลน์</span>
+          <hgroup>
+            <h2>จองคิวง่าย รู้เวลาชัดเจน</h2>
+            <h3>เหมาะสำหรับคลินิก ร้านเสริมสวย ร้านซ่อม ศูนย์บริการ หรือสำนักงาน</h3>
+          </hgroup>
+          <p>
+            ลูกค้าสามารถเลือกบริการ วันที่ และเวลาได้เอง ระบบจะช่วยตรวจสอบคิวซ้ำ
+            และแสดงรายการจองทั้งหมดแบบอัตโนมัติ
+          </p>
+
+          <figure>
+            <img
+              src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1400&q=80"
+              alt="ภาพการให้บริการลูกค้าและการนัดหมายออนไลน์"
+            >
+            <figcaption>
+              <a href="https://unsplash.com" target="_blank">ภาพจาก Unsplash</a>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="booking">
+        <article>
+          <hgroup>
+            <h2>แบบฟอร์มจองคิว</h2>
+            <h3>กรอกข้อมูลเพื่อจองวันและเวลาที่ต้องการ</h3>
+          </hgroup>
+
+          <form id="bookingForm">
+            <label for="fullname">ชื่อ-นามสกุล</label>
+            <input type="text" id="fullname" name="fullname" placeholder="เช่น สมชาย ใจดี" required>
+
+            <label for="phone">เบอร์โทรศัพท์</label>
+            <input type="tel" id="phone" name="phone" placeholder="เช่น 0812345678" required>
+
+            <label for="email">อีเมล</label>
+            <input type="email" id="email" name="email" placeholder="name@example.com">
+
+            <label for="service">เลือกบริการ</label>
+            <select id="service" name="service" required>
+              <option value="" selected disabled>กรุณาเลือกบริการ</option>
+              <option value="ปรึกษาทั่วไป">ปรึกษาทั่วไป</option>
+              <option value="ตรวจสุขภาพ">ตรวจสุขภาพ</option>
+              <option value="ทำเอกสาร">ทำเอกสาร</option>
+              <option value="บริการลูกค้า">บริการลูกค้า</option>
+            </select>
+
+            <div class="grid">
+              <div>
+                <label for="date">วันที่</label>
+                <input type="date" id="date" name="date" required>
+              </div>
+
+              <div>
+                <label for="time">เวลา</label>
+                <select id="time" name="time" required>
+                  <option value="" selected disabled>เลือกเวลา</option>
+                  <option value="09:00">09:00</option>
+                  <option value="10:00">10:00</option>
+                  <option value="11:00">11:00</option>
+                  <option value="13:00">13:00</option>
+                  <option value="14:00">14:00</option>
+                  <option value="15:00">15:00</option>
+                  <option value="16:00">16:00</option>
+                </select>
+              </div>
+            </div>
+
+            <label for="note">หมายเหตุเพิ่มเติม</label>
+            <textarea id="note" name="note" placeholder="รายละเอียดเพิ่มเติม เช่น ต้องการพบเจ้าหน้าที่คนใด"></textarea>
+
+            <button type="submit">ยืนยันการจองคิว</button>
+            <div id="statusMessage" class="status"></div>
+          </form>
+        </article>
+      </section>
+    </div>
+
+    <section id="queues" class="queue-list">
+      <hgroup>
+        <h2>รายการคิวที่จองแล้ว</h2>
+        <h3>ดู ลบ หรือพิมพ์รายการคิวได้จากส่วนนี้</h3>
+      </hgroup>
+
+      <div class="actions">
+        <button class="secondary" onclick="print()">พิมพ์รายการคิว</button>
+        <button class="danger" onclick="clearAllBookings()">ล้างคิวทั้งหมด</button>
+      </div>
+
+      <div id="bookingTable"></div>
+    </section>
+  </main>
+
+  <section aria-label="Subscribe example">
+    <div class="container">
+      <article>
+        <hgroup>
+          <h2>รับข่าวสารและประกาศ</h2>
+          <h3>สมัครรับข้อมูลเวลาทำการ โปรโมชัน หรือประกาศสำคัญ</h3>
+        </hgroup>
+
+        <form class="grid">
+          <input
+            type="text"
+            id="firstname"
+            name="firstname"
+            placeholder="First name"
+            aria-label="First name"
+            required
+          >
+          <input
+            type="email"
+            id="subscribeEmail"
+            name="email"
+            placeholder="Email address"
+            aria-label="Email address"
+            required
+          >
+          <button type="submit" onclick="event.preventDefault(); alert('สมัครรับข่าวสารเรียบร้อย')">
+            Subscribe
+          </button>
+        </form>
+      </article>
+    </div>
+  </section>
+
+  <footer class="container">
+    <small>
+      <a href="#">นโยบายความเป็นส่วนตัว</a> •
+      <a href="#">ติดต่อเรา</a>
+    </small>
+    <p><small>© 2026 QueueNow ระบบจองคิวออนไลน์</small></p>
+  </footer>
+
+  <script>
+    const STORAGE_KEY = "online_queue_bookings";
+
+    const form = document.getElementById("bookingForm");
+    const statusMessage = document.getElementById("statusMessage");
+    const bookingTable = document.getElementById("bookingTable");
+    const dateInput = document.getElementById("date");
+
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.min = today;
+
+    function getBookings() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    }
+
+    function saveBookings(bookings) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
+    }
+
+    function showStatus(message, type) {
+      statusMessage.textContent = message;
+      statusMessage.className = "status " + type;
+
+      setTimeout(() => {
+        statusMessage.textContent = "";
+        statusMessage.className = "status";
+      }, 3500);
+    }
+
+    function createBookingId() {
+      return "Q" + Date.now().toString().slice(-6);
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString + "T00:00:00");
+      return date.toLocaleDateString("th-TH", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
+    function renderBookings() {
+      const bookings = getBookings();
+
+      if (bookings.length === 0) {
+        bookingTable.innerHTML = '<div class="empty">ยังไม่มีรายการจองคิว</div>';
+        return;
+      }
+
+      const sortedBookings = bookings.sort((a, b) => {
+        return new Date(a.date + "T" + a.time) - new Date(b.date + "T" + b.time);
+      });
+
+      let html = `
+        <figure>
+          <table role="grid">
+            <thead>
+              <tr>
+                <th>เลขคิว</th>
+                <th>ชื่อ</th>
+                <th>บริการ</th>
+                <th>วันที่</th>
+                <th>เวลา</th>
+                <th>เบอร์โทร</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      sortedBookings.forEach((booking) => {
+        html += `
+          <tr>
+            <td><strong>${booking.id}</strong></td>
+            <td>${booking.fullname}</td>
+            <td>${booking.service}</td>
+            <td>${formatDate(booking.date)}</td>
+            <td>${booking.time}</td>
+            <td>${booking.phone}</td>
+            <td>
+              <button class="danger" onclick="deleteBooking('${booking.id}')">
+                ลบ
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += `
+            </tbody>
+          </table>
+        </figure>
+      `;
+
+      bookingTable.innerHTML = html;
+    }
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const fullname = document.getElementById("fullname").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const service = document.getElementById("service").value;
+      const date = document.getElementById("date").value;
+      const time = document.getElementById("time").value;
+      const note = document.getElementById("note").value.trim();
+
+      const bookings = getBookings();
+
+      const isDuplicate = bookings.some((booking) => {
+        return booking.service === service &&
+               booking.date === date &&
+               booking.time === time;
+      });
+
+      if (isDuplicate) {
+        showStatus("เวลานี้มีผู้จองแล้ว กรุณาเลือกเวลาอื่น", "error");
+        return;
+      }
+
+      const newBooking = {
+        id: createBookingId(),
+        fullname,
+        phone,
+        email,
+        service,
+        date,
+        time,
+        note,
+        createdAt: new Date().toISOString()
+      };
+
+      bookings.push(newBooking);
+      saveBookings(bookings);
+
+      form.reset();
+      dateInput.min = today;
+
+      showStatus("จองคิวสำเร็จ เลขคิวของคุณคือ " + newBooking.id, "success");
+      renderBookings();
+    });
+
+    function deleteBooking(id) {
+      const confirmed = confirm("ต้องการลบคิวนี้ใช่หรือไม่?");
+      if (!confirmed) return;
+
+      const bookings = getBookings().filter((booking) => booking.id !== id);
+      saveBookings(bookings);
+      renderBookings();
+    }
+
+    function clearAllBookings() {
+      const confirmed = confirm("ต้องการล้างรายการคิวทั้งหมดใช่หรือไม่?");
+      if (!confirmed) return;
+
+      localStorage.removeItem(STORAGE_KEY);
+      renderBookings();
+    }
+
+    renderBookings();
+  </script>
+</body>
+</html>
